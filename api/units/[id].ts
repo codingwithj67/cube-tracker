@@ -40,7 +40,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   const redis = await getClient();
 
   if (req.method === 'GET') {
-    const raw = await redis.get(keyFor(id));
+    const raw = (await redis.get(keyFor(id))) as string | null;
     if (!raw) {
       res.status(404).json({ error: 'not_found' });
       return;
