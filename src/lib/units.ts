@@ -1,6 +1,6 @@
 import { generateUnitId } from './id';
 import { buildQrUrl } from './config';
-import { syncUnitToServer } from './api';
+import { syncUnitToServer, fetchUnitForBuyer } from './api';
 
 export type UnitStatus = 'IN_STOCK' | 'SOLD';
 
@@ -61,10 +61,19 @@ export type SellResult =
   | { outcome: 'already-sold'; unit: Unit }
   | { outcome: 'not-found' };
 
-export function sellUnit(id: string): SellResult {
+export async function sellUnit(id: string): Promise<SellResult> {
   const units = readAll();
-  const unit = units.find((u) => u.id === id);
-  if (!unit) return { outcome: 'not-found' };
+  let unit = units.find((u) => u.id === id);
+
+  if (!unit) {
+    // Not logged on this device — it may have been created on a different
+    // one. Check the shared store before calling it unrecognized.
+    const remote = await fetchUnitForBuyer(id);
+    if (remote.outcome !== 'found') return { outcome: 'not-found' };
+    unit = remote.unit;
+    units.push(unit);
+  }
+
   if (unit.status === 'SOLD') return { outcome: 'already-sold', unit };
   unit.status = 'SOLD';
   unit.soldAt = new Date().toISOString();

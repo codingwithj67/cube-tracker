@@ -2,7 +2,7 @@ import { useState, type FormEvent } from 'react';
 import { Scanner } from './Scanner';
 import { sellUnit, parseUnitId, type SellResult } from '../lib/units';
 
-type ViewState = { mode: 'scanning' } | { mode: 'result'; result: SellResult };
+type ViewState = { mode: 'scanning' } | { mode: 'checking' } | { mode: 'result'; result: SellResult };
 
 export function ScanOutScreen() {
   const [view, setView] = useState<ViewState>({ mode: 'scanning' });
@@ -11,24 +11,30 @@ export function ScanOutScreen() {
   const [manualError, setManualError] = useState<string | null>(null);
 
   function handleScan(text: string) {
-    resolveCode(text);
+    void resolveCode(text);
   }
 
-  function resolveCode(text: string) {
+  async function resolveCode(text: string) {
     const id = parseUnitId(text);
-    const result: SellResult = id ? sellUnit(id) : { outcome: 'not-found' };
+    if (!id) {
+      setView({ mode: 'result', result: { outcome: 'not-found' } });
+      return;
+    }
+    setView({ mode: 'checking' });
+    const result = await sellUnit(id);
     setView({ mode: 'result', result });
   }
 
-  function handleManualSubmit(e: FormEvent) {
+  async function handleManualSubmit(e: FormEvent) {
     e.preventDefault();
     if (!manualCode.trim()) {
       setManualError('Enter a unit code.');
       return;
     }
     setManualError(null);
-    resolveCode(manualCode);
+    const code = manualCode;
     setManualCode('');
+    await resolveCode(code);
   }
 
   function handleScanNext() {
@@ -64,6 +70,8 @@ export function ScanOutScreen() {
             </button>
           </form>
         </>
+      ) : view.mode === 'checking' ? (
+        <p className="dek">Checking…</p>
       ) : (
         <ScanResult result={view.result} onScanNext={handleScanNext} />
       )}
