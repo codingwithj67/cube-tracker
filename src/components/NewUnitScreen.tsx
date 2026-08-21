@@ -7,6 +7,7 @@ const METAL_TYPES = ['Steel', 'Aluminium', 'Copper', 'Brass', 'Stainless Steel']
 export function NewUnitScreen() {
   const [weight, setWeight] = useState('');
   const [metalType, setMetalType] = useState('');
+  const [description, setDescription] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [lastUnit, setLastUnit] = useState<Unit | null>(null);
   const [recent, setRecent] = useState<Unit[]>(() => listUnits().slice(0, 8));
@@ -19,11 +20,12 @@ export function NewUnitScreen() {
       return;
     }
     setError(null);
-    const unit = createUnit({ weightKg, metalType });
+    const unit = createUnit({ weightKg, metalType, description });
     setLastUnit(unit);
     setRecent(listUnits().slice(0, 8));
     setWeight('');
     setMetalType('');
+    setDescription('');
   }
 
   return (
@@ -65,6 +67,17 @@ export function NewUnitScreen() {
                 <option key={m} value={m} />
               ))}
             </datalist>
+          </label>
+          <label className="field">
+            <span>
+              Description <em>(optional)</em>
+            </span>
+            <textarea
+              rows={3}
+              placeholder="e.g. 95% clean, minimal insulation"
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+            />
           </label>
           {error && <p className="form-error">{error}</p>}
           <button type="submit" className="btn-primary">

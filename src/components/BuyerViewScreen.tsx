@@ -88,8 +88,9 @@ export function BuyerViewScreen({ unitId }: Props) {
   return (
     <div className="buyer-view">
       <span className="buyer-code">{unit.id}</span>
+      <p className="buyer-material">{unit.metalType ?? 'Metal cube'}</p>
       <p className="buyer-weight">{unit.weightKg.toFixed(2)} kg</p>
-      {unit.metalType && <p className="buyer-metal">{unit.metalType}</p>}
+      {unit.description && <p className="buyer-description">{unit.description}</p>}
       <span className={unit.status === 'IN_STOCK' ? 'status-pill status-instock' : 'status-pill status-sold'}>
         {unit.status === 'IN_STOCK' ? 'In stock' : 'Sold'}
       </span>

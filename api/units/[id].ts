@@ -6,6 +6,7 @@ interface UnitRecord {
   status: 'IN_STOCK' | 'SOLD';
   weightKg: number;
   metalType?: string;
+  description?: string;
   producedAt: string;
   soldAt?: string;
 }

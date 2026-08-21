@@ -75,7 +75,8 @@
   color: var(--ink-soft);
 }
 
-.field input {
+.field input,
+.field textarea {
   font: inherit;
   font-size: 17px;
   padding: 12px 14px;
@@ -85,7 +86,13 @@
   color: var(--ink);
 }
 
-.field input:focus-visible {
+.field textarea {
+  font-size: 15px;
+  resize: vertical;
+}
+
+.field input:focus-visible,
+.field textarea:focus-visible {
   outline: 2px solid var(--accent);
   outline-offset: 1px;
 }
@@ -492,16 +499,27 @@
   letter-spacing: 0.04em;
 }
 
-.buyer-weight {
-  font-size: 32px;
+.buyer-material {
+  font-size: 30px;
   font-weight: 800;
+  line-height: 1.15;
   margin: 4px 0 0;
+  text-wrap: balance;
 }
 
-.buyer-metal {
+.buyer-weight {
   font-size: 16px;
   color: var(--ink-soft);
+  font-variant-numeric: tabular-nums;
   margin: 0 0 6px;
+}
+
+.buyer-description {
+  font-size: 14.5px;
+  color: var(--ink-soft);
+  line-height: 1.5;
+  margin: 4px 0 8px;
+  max-width: 30ch;
 }
 
 .buyer-title {

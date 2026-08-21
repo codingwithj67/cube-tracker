@@ -10,6 +10,7 @@ export interface Unit {
   status: UnitStatus;
   weightKg: number;
   metalType?: string;
+  description?: string;
   producedAt: string;
   soldAt?: string;
 }
@@ -33,7 +34,7 @@ export function listUnits(): Unit[] {
   return readAll().sort((a, b) => b.producedAt.localeCompare(a.producedAt));
 }
 
-export function createUnit(input: { weightKg: number; metalType?: string }): Unit {
+export function createUnit(input: { weightKg: number; metalType?: string; description?: string }): Unit {
   const id = generateUnitId();
   const unit: Unit = {
     id,
@@ -41,6 +42,7 @@ export function createUnit(input: { weightKg: number; metalType?: string }): Uni
     status: 'IN_STOCK',
     weightKg: input.weightKg,
     metalType: input.metalType?.trim() || undefined,
+    description: input.description?.trim() || undefined,
     producedAt: new Date().toISOString(),
   };
   const units = readAll();
